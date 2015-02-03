@@ -1,6 +1,7 @@
 import sys
 import numpy as np
 
+# THIS IS EXACTLY THE SAME AS seq_pred.py, EXCEPT FOR LINE 88 (WHERE WE ADD INSTEAD OF MULTIPLY)
 class HMM:
     def __init__(self, filename):
         '''Constructor for the HMM class. Basically just a convenience class

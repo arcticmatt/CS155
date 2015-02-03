@@ -4,6 +4,10 @@ import sys
 
 class MTrain:
     def __init__(self, filename):
+        '''Constructor for the MTrain class. This class uses a single M-step
+        to train a Hidden Markov Model.
+        '''
+
         self.num_observations = 0
         self.num_states = 0
         self.pair_list = []
@@ -29,6 +33,7 @@ class MTrain:
         tab-delimited strings: Ron's mood (hidden states) and Ron's genre
         preference that day (observations).
         '''
+
         file_obj = open(filename)
         for line in file_obj.readlines():
             state, observation = line.split()
@@ -143,7 +148,7 @@ class MTrain:
         size - size of test set
         '''
 
-        # Assuming training set will contain all observations and states.
+        # We assume that the training set will contain all observations and states.
         old_pair_list = self.pair_list
         self.pair_list = self.pair_list[0:start] + self.pair_list[start + size:]
         self.test_pair_list = old_pair_list[start:start + size]

@@ -1,7 +1,7 @@
 import sys
 import math
 import numpy as np
-from seq_pred import Viterbi
+from seq_pred_mod import Viterbi
 
 print_backward = False
 print_forward = False
@@ -66,7 +66,7 @@ class CRF:
         self.list_dict['obs_list'] = self.obs_list
 
     def run_gradient_descent(self):
-        '''Performs gradient to minimize the negative log loss over the
+        '''Performs gradient descent to minimize the negative log loss over the
         training set, which in our case is just one sequence.
         '''
 
@@ -82,6 +82,7 @@ class CRF:
         print '======================================================================================'
         print '======================================================================================'
         print '======================================================================================'
+        # Runs 1000 epochs (or less, if we start getting underflow/overflow)
         for i in range(0, 1000):
             print '========== Epoch', i, '=========='
             self.matrices.init_shift_trans_mat()
@@ -89,6 +90,7 @@ class CRF:
 
             self.forward.run(self.obs_seq)
             self.backward.run(self.obs_seq)
+
             #self.forward.print_col(0)
             #self.forward.print_col(500)
             #self.forward.print_col(1000)
@@ -97,23 +99,29 @@ class CRF:
             #self.backward.print_col(1000)
             #self.backward.print_col(500)
             #self.backward.print_col(0)
-
             #f_val = self.forward.get_val(1, 2)
             #print 'f_val =', f_val
             #b_val = self.backward.get_val(2, 1)
             #print 'b_val =', b_val
 
+            # Calculates the gradient step
             self.compute_gradient()
+
+            # We want to break if we underflow or overflow
             if self.matrices.shift_has_inf() or self.matrices.shift_has_nan():
                 break
+
+            # Applies the gradient step
             self.matrices.update_trans_mat()
             self.matrices.update_emiss_mat()
-            #if not self.matrices.is_changing():
-                #break
         print 'Done with gradient descent'
 
     def compute_gradient(self):
-        '''Computes the gradient for one training point.'''
+        '''Computes the gradient for one training point. The methods that this
+        method calls will update the shift matrices in the Matrices class so that
+        by the time this method is done, we will have calculated how much to shift
+        our "weight vector" (transition and emission matrices) by for the current
+        epoch.'''
 
         # Loop through positions in sequence
         sum_gradient = 0
@@ -123,13 +131,11 @@ class CRF:
         for seq_pos in range(1, len(self.obs_seq)):
             # Z-score is the same for every a,b (given a position in the sequence)
             z_score = self.compute_z_score(seq_pos)
-            #print 'Z-score for seq_pos =', seq_pos, 'is ', z_score
-            #if not np.isnan(z_score) and not np.isinf(z_score):
-                #print('Z-score = ' + str(z_score))
             z_gradient = self.compute_z_gradient(seq_pos, z_score)
             f_gradient = self.compute_f_gradient(seq_pos)
             gradient = f_gradient + z_gradient
             sum_gradient += gradient
+        return sum_gradient
 
     def compute_f_gradient(self, seq_pos):
         '''Computes f-gradient for a given position in the sequence.'''
@@ -158,28 +164,25 @@ class CRF:
         sequence position, and z-score.
         '''
 
-        # One part of the gradient is grad(log(Z(x)). This is as follows.
         seq_int = int(self.obs_seq[seq_pos])
         forward_score = self.forward.get_val(state_prev, seq_pos - 1)
         backward_score = self.backward.get_val(state_curr, seq_pos)
         g_score = self.matrices.get_g_score_forward(seq_pos, state_curr, state_prev, seq_int)
         numerator = forward_score * g_score * backward_score
-        #print 'Numerator for state_curr =', state_curr, ' and state_prev =', state_prev, ' is ', numerator
         ans = numerator / float(z_score)
         # Update "weight vector" (e.g. transition and emission matrices)
-        #if not np.isnan(ans) and seq_pos == len(self.obs_seq) - 1:
-        #print 'Updating by z_score =', ans
         self.matrices.update_shift_trans_mat(state_curr, state_prev, ans)
         self.matrices.update_shift_emiss_mat(state_curr, seq_pos, ans)
         return ans
 
     def compute_z_score(self, seq_pos):
-        '''Helper function to compute the Z-score.
-        This is the denominator in the gradient of the log of Z(x).
+        '''Helper function to compute the Z-gradient.
+        This method computes the denominator in the gradient of the log of Z(x).
         '''
 
         z_score = 0
         seq_int = int(self.obs_seq[seq_pos])
+        # Sum over all states
         for state_prev in range(0, self.num_states):
             for state_curr in range(0, self.num_states):
                 forward_score = self.forward.get_val(state_prev, seq_pos - 1)
@@ -348,7 +351,9 @@ class Matrices:
         print('Initialized normalization factors. There are ' + str(len(self.obs_seq)) + ' of them')
 
     def get_g_score_forward(self, seq_pos, state_curr, state_prev, seq_int):
-        '''Returns the G-score for the forward algorithm.'''
+        '''Returns the G-score for the forward algorithm. This is just
+        e^{trans_score + emiss_score}.
+        '''
 
         trans_score = self.trans_mat[state_curr][state_prev]
         emiss_score = self.emiss_mat[state_curr][seq_int]
@@ -371,8 +376,6 @@ class Matrices:
         the learning rate of the class since the update is for gradient descent.
         '''
 
-        #if not np.isnan(val):
-            #print('Shifting shift_trans_mat at (' + str(state_curr) + ', ' + str(state_prev) + ') by ' + str(val))
         self.shift_trans_mat[state_curr][state_prev] += self.learning_rate * val
 
     def update_shift_emiss_mat(self, state_curr, seq_pos, val):
@@ -381,8 +384,6 @@ class Matrices:
         '''
 
         seq_int = int(self.obs_seq[seq_pos])
-        #if not np.isnan(val):
-            #print('Shifting shift_trans_mat at (' + str(state_curr) + ', ' + str(seq_pos) + ') by ' + str(val))
         self.shift_emiss_mat[state_curr][seq_int] += self.learning_rate * val
 
     def update_trans_mat(self):
@@ -390,8 +391,6 @@ class Matrices:
         matrix.
         '''
 
-        #for i in range(0, len(self.shift_trans_mat)):
-            #self.shift_trans_mat[i] = map(lambda x : x * self.learning_rate, self.shift_trans_mat[i])
         print 'Updating trans_mat by the following shift matrix:'
         print self.shift_trans_mat
         print 'Old trans_mat is:'
@@ -406,9 +405,6 @@ class Matrices:
         matrix.
         '''
 
-        # Apply learning rate to shift matrix
-        #for i in range(0, len(self.shift_emiss_mat)):
-            #self.shift_emiss_mat[i] = map(lambda x : x * self.learning_rate, self.shift_emiss_mat[i])
         print 'Updating emiss_mat by the following shift matrix:'
         print self.shift_emiss_mat
         print 'Old emiss_mat is:'
@@ -481,7 +477,8 @@ class Matrices:
 class Forward:
     def __init__(self, num_states, matrices):
         '''Constructor for the Forward class. This class runs the Forward
-        algorithm and saves the resulting DP matrix as an instance variable.
+        algorithm for CRFs and saves the resulting DP matrix as an
+        instance variable.
         '''
 
         self.matrices = matrices
@@ -548,8 +545,9 @@ class Forward:
 
 class Backward:
     def __init__(self, num_states, matrices):
-        '''Constructor for the Backward class. This class runs the Forward
-        algorithm and saves the resulting DP matrix as an instance variable.
+        '''Constructor for the Backward class. This class runs the Backward
+        algorithm for CRFs and saves the resulting DP matrix as an
+        instance variable.
         '''
 
         self.matrices = matrices
