@@ -21,6 +21,8 @@ class MTrain:
         self.validation_errors = []
         self.cross_validation_error = None
         self.load_file(filename)
+        print self.state_dict
+        print self.observation_dict
 
     def load_file(self, filename):
         '''Loads the data file the TAs give us. Each line contains two
@@ -50,6 +52,7 @@ class MTrain:
     def run(self):
         '''Makes the transition and emission matrices, and prints them out.'''
 
+        print 'Running'
         self.make_trans_mat()
         self.make_emiss_mat()
 
@@ -99,6 +102,7 @@ class MTrain:
     def cross_validate(self):
         '''Perform 5-fold cross validation'''
 
+        print 'Cross validate'
         test_size = len(self.pair_list) / 5
         training_size = len(self.pair_list) - test_size
         for i in range (0, 5):

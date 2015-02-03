@@ -1,12 +1,20 @@
 import sys
 import math
 import numpy as np
+from seq_pred import Viterbi
 
 print_backward = False
 print_forward = False
 
 class CRF:
     def __init__(self, filename):
+        '''Constructor for the CRF class. This class uses the Forward
+        and backward algorithms along with gradient descent to train
+        a model for sequence prediction. The model is given by transition
+        and emission matrices. This class can also perform cross validation
+        with Viterbi to gauge performance.
+        '''
+
         self.num_observations = 0
         self.num_states = 0
         self.pair_list = []
@@ -17,17 +25,11 @@ class CRF:
         self.trans_mat = []
         self.emiss_mat = []
         self.list_dict = {}
-        self.shift_trans_mat = []
-        self.shift_emiss_mat = []
 
         self.load_file(filename)
 
         self.state_seq = ''.join(map(str, self.state_list))
         self.obs_seq = ''.join(map(str, self.obs_list))
-
-        self.matrices = Matrices(self.num_states, self.num_observations, self.obs_seq)
-        self.forward = Forward(self.num_states, self.matrices)
-        self.backward = Backward(self.num_states, self.matrices)
 
         # Cross validation lists
         self.test_pair_list = []
@@ -42,6 +44,7 @@ class CRF:
         tab-delimited strings: Ron's mood (hidden states) and Ron's genre
         preference that day (observations).
         '''
+
         file_obj = open(filename)
         for line in file_obj.readlines():
             state, observation = line.split()
@@ -63,6 +66,15 @@ class CRF:
         self.list_dict['obs_list'] = self.obs_list
 
     def run_gradient_descent(self):
+        '''Performs gradient to minimize the negative log loss over the
+        training set, which in our case is just one sequence.
+        '''
+
+        # Initialize matrices for the observation sequence
+        self.matrices = Matrices(self.num_states, self.num_observations, self.obs_seq)
+        self.forward = Forward(self.num_states, self.matrices)
+        self.backward = Backward(self.num_states, self.matrices)
+
         print '======================================================================================'
         print '======================================================================================'
         print '======================================================================================'
@@ -77,21 +89,23 @@ class CRF:
 
             self.forward.run(self.obs_seq)
             self.backward.run(self.obs_seq)
-            self.forward.print_col(0)
-            self.forward.print_col(500)
-            self.forward.print_col(1000)
-            self.forward.print_col(len(self.obs_seq) - 1)
-            self.backward.print_col(len(self.obs_seq) - 1)
-            self.backward.print_col(1000)
-            self.backward.print_col(500)
-            self.backward.print_col(0)
+            #self.forward.print_col(0)
+            #self.forward.print_col(500)
+            #self.forward.print_col(1000)
+            #self.forward.print_col(len(self.obs_seq) - 1)
+            #self.backward.print_col(len(self.obs_seq) - 1)
+            #self.backward.print_col(1000)
+            #self.backward.print_col(500)
+            #self.backward.print_col(0)
 
-            f_val = self.forward.get_val(1, 2)
-            print 'f_val =', f_val
-            b_val = self.backward.get_val(2, 1)
-            print 'b_val =', b_val
+            #f_val = self.forward.get_val(1, 2)
+            #print 'f_val =', f_val
+            #b_val = self.backward.get_val(2, 1)
+            #print 'b_val =', b_val
 
             self.compute_gradient()
+            if self.matrices.shift_has_inf() or self.matrices.shift_has_nan():
+                break
             self.matrices.update_trans_mat()
             self.matrices.update_emiss_mat()
             #if not self.matrices.is_changing():
@@ -99,7 +113,8 @@ class CRF:
         print 'Done with gradient descent'
 
     def compute_gradient(self):
-        '''Compute the gradient for one training point.'''
+        '''Computes the gradient for one training point.'''
+
         # Loop through positions in sequence
         sum_gradient = 0
         # For seq_pos = 0, there is no transition, so the only thing we want
@@ -174,8 +189,81 @@ class CRF:
                 z_score += score
         return z_score
 
+    def cross_validate(self):
+        '''Perform 5-fold cross validation'''
+
+        test_size = len(self.pair_list) / 5
+        training_size = len(self.pair_list) - test_size
+        for i in range (0, 5):
+            self.reset_data()
+            size = test_size
+            # For last slice, extend it to the end
+            if i == 4:
+                size += len(self.pair_list) - (i * test_size + test_size)
+            self.modify_data(i * test_size, size)
+            self.run_gradient_descent()
+            # Get the sequence of test observations (genres) to run Viterbi on
+            sequence = ''.join(map(str, self.test_obs_list))
+            viterbi = Viterbi('yo.txt', self.matrices.trans_mat, self.matrices.emiss_mat, sequence)
+            training_sequence = viterbi.run(sequence)
+            self.add_validation_error(training_sequence)
+        self.cross_validation_error = sum(self.validation_errors) / len(self.validation_errors)
+        print 'Cross validation error = ', self.cross_validation_error
+        print 'The array of errors was', self.validation_errors
+        return self.cross_validation_error
+
+    def add_validation_error(self, training_sequence):
+        '''Calculates and adds another error value to the list of validation errors.'''
+
+        mismatch_count = 0
+        # Get the sequence of test states (moods) to compare the results against
+        test_sequence = ''.join(map(str, self.test_state_list))
+        for j in range(0, len(training_sequence)):
+            if training_sequence[j] != test_sequence[j]:
+                mismatch_count += 1
+        error = mismatch_count / float(len(training_sequence))
+        print 'Adding error of', error
+        self.validation_errors.append(error)
+
+    def modify_data(self, start, size):
+        '''Modifies data for cross validation.
+
+        start - index where test set starts
+        size - size of test set
+        '''
+
+        # Assuming training set will contain all observations and states.
+        old_pair_list = self.pair_list
+        self.pair_list = self.pair_list[0:start] + self.pair_list[start + size:]
+        self.test_pair_list = old_pair_list[start:start + size]
+
+        old_state_list = self.state_list
+        self.state_list = self.state_list[0:start] + self.state_list[start + size:]
+        self.state_seq = ''.join(map(str, self.state_list))
+        self.test_state_list = old_state_list[start:start + size]
+
+        old_obs_list = self.obs_list
+        self.obs_list = self.obs_list[0:start] + self.obs_list[start + size:]
+        self.obs_seq = ''.join(map(str, self.obs_list))
+        self.test_obs_list = old_obs_list[start:start + size]
+
+    def reset_data(self):
+        ''' Resets data to original file inputs.'''
+
+        self.pair_list = self.list_dict['pair_list']
+        self.state_list = self.list_dict['state_list']
+        self.state_seq = ''.join(map(str, self.state_list))
+        self.obs_list = self.list_dict['obs_list']
+        self.obs_seq = ''.join(map(str, self.obs_list))
+
 class Matrices:
     def __init__(self, num_states, num_observations, obs_seq):
+        '''Constructor for the Matrices class. This class stores the
+        transition and emission matrices used for CRF, Forward, and Backward
+        algorithms. It also has all the methods for performing updates to these
+        matrices.
+        '''
+
         self.num_states = num_states
         self.num_observations = num_observations
         self.emiss_mat = []
@@ -191,12 +279,6 @@ class Matrices:
         self.init_shift_emiss_mat()
         self.learning_rate = .00001
         self.stopping_point = .01
-
-    def transpose(self, matrix):
-        '''Transposes a 2d list.'''
-
-        transposedTupleMatrix = zip(*matrix)
-        return map(lambda row: list(row), transposedTupleMatrix)
 
     def init_trans_mat(self):
         '''Makes an initial transition matrix of all ones. Our transition
@@ -335,6 +417,36 @@ class Matrices:
         print 'New emiss_mat is:'
         print self.emiss_mat
 
+    def shift_has_nan(self):
+        '''Checks to see if either of the shift matrices has a nan value.
+        This method is used to terminate gradient descent.
+        '''
+
+        for row in self.shift_trans_mat:
+            for val in row:
+                if np.isnan(val):
+                    return True
+        for row in self.shift_emiss_mat:
+            for val in row:
+                if np.isnan(val):
+                    return True
+        return False
+
+    def shift_has_inf(self):
+        '''Checks to see if either of the shift matrices has an inf value.
+        This method is used to terminate gradient descent.
+        '''
+
+        for row in self.shift_trans_mat:
+            for val in row:
+                if np.isinf(val):
+                    return True
+        for row in self.shift_emiss_mat:
+            for val in row:
+                if np.isinf(val):
+                    return True
+        return False
+
     def is_changing(self):
         '''Returns true is either the trans mat or emiss mat is still changing
         by a value specified in the constructor and false otherwise.
@@ -368,6 +480,10 @@ class Matrices:
 
 class Forward:
     def __init__(self, num_states, matrices):
+        '''Constructor for the Forward class. This class runs the Forward
+        algorithm and saves the resulting DP matrix as an instance variable.
+        '''
+
         self.matrices = matrices
         self.num_states = num_states
         self.forward_mat = []
@@ -398,6 +514,8 @@ class Forward:
         return ans
 
     def initialize_forward_mat(self, sequence):
+        '''Initializes the forward matrix.'''
+
         self.forward_mat = []
         for i in range(0, self.num_states):
             row = []
@@ -406,7 +524,6 @@ class Forward:
                     seq_int = int(sequence[j])
                     # Calculate initial probabilities.
                     emiss_val = self.matrices.emiss_mat[i][seq_int]
-                    print 'emiss_val =', emiss_val
                     normalization_val = self.matrices.forward_normalization_factors[j]
                     val = math.exp((1.0 / self.num_states) + emiss_val) * normalization_val
                     row.append(val)
@@ -423,12 +540,18 @@ class Forward:
             print '\n'
 
     def print_col(self, col_index):
+        '''Prints the passed in column of the forward matrix.'''
+
         print 'Printing column', col_index, 'of forward_mat'
         for row_index in range(0, self.num_states):
             print self.forward_mat[row_index][col_index]
 
 class Backward:
     def __init__(self, num_states, matrices):
+        '''Constructor for the Backward class. This class runs the Forward
+        algorithm and saves the resulting DP matrix as an instance variable.
+        '''
+
         self.matrices = matrices
         self.num_states = num_states
         self.backward_mat = []
@@ -460,6 +583,8 @@ class Backward:
         return ans
 
     def initialize_backward_mat(self, sequence):
+        '''Runs Backward on the passed in sequence.'''
+
         self.backward_mat = []
         for i in range(0, self.num_states):
             row = []
@@ -481,10 +606,12 @@ class Backward:
             print '\n'
 
     def print_col(self, col_index):
+        '''Prints the passed in column of the forward matrix.'''
+
         print 'Printing column', col_index, 'of backward_mat'
         for row_index in range(0, self.num_states):
             print self.backward_mat[row_index][col_index]
 
 if __name__ == '__main__':
     crf = CRF('ron.txt')
-    crf.run_gradient_descent()
+    crf.cross_validate()
