@@ -376,7 +376,7 @@ class Matrices:
         the learning rate of the class since the update is for gradient descent.
         '''
 
-        self.shift_trans_mat[state_curr][state_prev] += self.learning_rate * val
+        self.shift_trans_mat[state_curr][state_prev] -= self.learning_rate * val
 
     def update_shift_emiss_mat(self, state_curr, seq_pos, val):
         '''Updates the shift emission matrix at a specific cell, using
@@ -384,34 +384,34 @@ class Matrices:
         '''
 
         seq_int = int(self.obs_seq[seq_pos])
-        self.shift_emiss_mat[state_curr][seq_int] += self.learning_rate * val
+        self.shift_emiss_mat[state_curr][seq_int] -= self.learning_rate * val
 
     def update_trans_mat(self):
         '''Updates the transition matrix at every cell by applying the shift transition
         matrix.
         '''
 
-        print 'Updating trans_mat by the following shift matrix:'
-        print self.shift_trans_mat
-        print 'Old trans_mat is:'
-        print self.trans_mat
+        #print 'Updating trans_mat by the following shift matrix:'
+        #print self.shift_trans_mat
+        #print 'Old trans_mat is:'
+        #print self.trans_mat
         self.trans_mat = [map(sum, zip(*t)) for t in zip(self.trans_mat, self.shift_trans_mat)]
-        print 'New trans_mat is:'
-        print self.trans_mat
-        print '\n'
+        #print 'New trans_mat is:'
+        #print self.trans_mat
+        #print '\n'
 
     def update_emiss_mat(self):
         '''Updates the emission matrix at every cell by applying the shift emission
         matrix.
         '''
 
-        print 'Updating emiss_mat by the following shift matrix:'
-        print self.shift_emiss_mat
-        print 'Old emiss_mat is:'
-        print self.emiss_mat
+        #print 'Updating emiss_mat by the following shift matrix:'
+        #print self.shift_emiss_mat
+        #print 'Old emiss_mat is:'
+        #print self.emiss_mat
         self.emiss_mat = [map(sum, zip(*t)) for t in zip(self.emiss_mat, self.shift_emiss_mat)]
-        print 'New emiss_mat is:'
-        print self.emiss_mat
+        #print 'New emiss_mat is:'
+        #print self.emiss_mat
 
     def shift_has_nan(self):
         '''Checks to see if either of the shift matrices has a nan value.
