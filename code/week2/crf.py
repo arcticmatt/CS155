@@ -1,10 +1,43 @@
 import sys
 import math
 import numpy as np
+import random
 from seq_pred_mod import Viterbi
 
 print_backward = False
 print_forward = False
+
+'''
+Overview of my implementation (copied from our group email to you):
+
+Instead of implementing gradient descent with the new notation using a stacked
+weight vector of 'w's and a stacked feature vector of 'phi's, we instead decided
+to implement gradient descent using the scoring function, where our 'weight vector'
+were our emission and transition matrices. Thus, when we did gradient descent,
+instead of looking to 'phi' to see which element of our weight vector to update,
+we directly updated the correct emission and transition entries based on the current
+states and emission we were considering (a, b, j). Here's some very short 'pseudocode':
+
+for (j goes through entire sequence)
+     calculate Z(x) denominator
+     for (each state A)
+          for (each state B)
+               calculate logZ gradient (alpha * G * beta), and divide by Z(x) denominator
+               shift (A, B) transition
+               shift (A, observation at J) emission
+
+For the second term (the F gradient), we simply subtracted 1 from the shift matrix
+for every transition and every state-emission combination we found in the dataset (similar to above).
+
+We also altered Viterbi to sum instead of multiply in order to test our algorithm in the DP process.
+
+I also added in a dynamic normalization factor to avoid underflow/overflow, and
+used uniform initial weights (for my emission and transition entries) between
+0 and 1.
+
+For cross validation, I pocket the minimum error for each slice to more accurately
+gauge performance.
+'''
 
 class CRF:
     def __init__(self, filename):
@@ -31,11 +64,12 @@ class CRF:
         self.state_seq = ''.join(map(str, self.state_list))
         self.obs_seq = ''.join(map(str, self.obs_list))
 
-        # Cross validation lists
+        # Cross validation vars
+        self.cross_val_slice = 0
         self.test_pair_list = []
         self.test_state_list = []
         self.test_obs_list = []
-        self.validation_errors = []
+        self.validation_errors = [sys.maxint for x in range(5)]
         self.cross_validation_error = None
         print 'Done initializing CRF'
 
@@ -83,26 +117,13 @@ class CRF:
         print '======================================================================================'
         print '======================================================================================'
         # Runs 1000 epochs (or less, if we start getting underflow/overflow)
-        for i in range(0, 1000):
+        for i in range(0, 500):
             print '========== Epoch', i, '=========='
             self.matrices.init_shift_trans_mat()
             self.matrices.init_shift_emiss_mat()
 
             self.forward.run(self.obs_seq)
             self.backward.run(self.obs_seq)
-
-            #self.forward.print_col(0)
-            #self.forward.print_col(500)
-            #self.forward.print_col(1000)
-            #self.forward.print_col(len(self.obs_seq) - 1)
-            #self.backward.print_col(len(self.obs_seq) - 1)
-            #self.backward.print_col(1000)
-            #self.backward.print_col(500)
-            #self.backward.print_col(0)
-            #f_val = self.forward.get_val(1, 2)
-            #print 'f_val =', f_val
-            #b_val = self.backward.get_val(2, 1)
-            #print 'b_val =', b_val
 
             # Calculates the gradient step
             self.compute_gradient()
@@ -114,6 +135,11 @@ class CRF:
             # Applies the gradient step
             self.matrices.update_trans_mat()
             self.matrices.update_emiss_mat()
+
+            # Compute and possibly add the current error
+            error = self.add_validation_error()
+            print 'Error =', error
+
         print 'Done with gradient descent'
 
     def compute_gradient(self):
@@ -198,6 +224,7 @@ class CRF:
         test_size = len(self.pair_list) / 5
         training_size = len(self.pair_list) - test_size
         for i in range (0, 5):
+            self.cross_val_slice = i
             self.reset_data()
             size = test_size
             # For last slice, extend it to the end
@@ -205,28 +232,33 @@ class CRF:
                 size += len(self.pair_list) - (i * test_size + test_size)
             self.modify_data(i * test_size, size)
             self.run_gradient_descent()
-            # Get the sequence of test observations (genres) to run Viterbi on
-            sequence = ''.join(map(str, self.test_obs_list))
-            viterbi = Viterbi('yo.txt', self.matrices.trans_mat, self.matrices.emiss_mat, sequence)
-            training_sequence = viterbi.run(sequence)
-            self.add_validation_error(training_sequence)
         self.cross_validation_error = sum(self.validation_errors) / len(self.validation_errors)
         print 'Cross validation error = ', self.cross_validation_error
         print 'The array of errors was', self.validation_errors
         return self.cross_validation_error
 
-    def add_validation_error(self, training_sequence):
-        '''Calculates and adds another error value to the list of validation errors.'''
+    def add_validation_error(self):
+        '''Computes the out of sample error for the current training set,
+        test set, and the current set of transition and emission matrices. If this
+        error is less than the error we currently have for the cross_val_slice (which
+        runs from 0-4 since we are doing 5-fold cross validation), we will store it in
+        our array of validation errors. This essentially means we are pocketing the
+        minimum errors for each slice while we do cross validation.
+        '''
+
+        test_obs_seq = ''.join(map(str, self.test_obs_list))
+        viterbi = Viterbi('yo.txt', self.matrices.trans_mat, self.matrices.emiss_mat, test_obs_seq)
+        prediction_seq = viterbi.run(test_obs_seq)
+        test_state_seq = ''.join(map(str, self.test_state_list))
 
         mismatch_count = 0
-        # Get the sequence of test states (moods) to compare the results against
-        test_sequence = ''.join(map(str, self.test_state_list))
-        for j in range(0, len(training_sequence)):
-            if training_sequence[j] != test_sequence[j]:
+        for j in range(0, len(prediction_seq)):
+            if prediction_seq[j] != test_state_seq[j]:
                 mismatch_count += 1
-        error = mismatch_count / float(len(training_sequence))
-        print 'Adding error of', error
-        self.validation_errors.append(error)
+        error = mismatch_count / float(len(prediction_seq))
+        if error < self.validation_errors[self.cross_val_slice]:
+            self.validation_errors[self.cross_val_slice] = error
+        return error
 
     def modify_data(self, start, size):
         '''Modifies data for cross validation.
@@ -272,19 +304,17 @@ class Matrices:
         self.emiss_mat = []
         self.trans_mat = []
         self.obs_seq = obs_seq
-        self.forward_normalization_factors = []
-        self.backward_normalization_factors = []
 
-        self.init_normalization_factors()
         self.init_trans_mat()
         self.init_emiss_mat()
         self.init_shift_trans_mat()
         self.init_shift_emiss_mat()
-        self.learning_rate = .00001
+        self.learning_rate = .001
         self.stopping_point = .01
 
     def init_trans_mat(self):
-        '''Makes an initial transition matrix of all ones. Our transition
+        '''Makes an initial transition matrix, where the values are chosen from
+        a uniform distribution between 0 and 1. Our transition
         matrix is defined as follows. An element (a, b) of the matrix represents
         the score of transitioning from state b to state a.
         '''
@@ -293,11 +323,12 @@ class Matrices:
         for i in range(0, self.num_states):
             row = []
             for j in range(0, self.num_states):
-                row.append(1.0)
+                row.append(random.random())
             self.trans_mat.append(row)
 
     def init_emiss_mat(self):
-        '''Makes an initial emission matrix of all ones. Our emission
+        '''Makes an initial emission matrix, where the values are chosen from
+        a uniform distribution between 0 and 1. Our emission
         matrix is defined as follows. An element (a, b) of the matrix represents
         the score of having an observation b given state a.
         '''
@@ -306,7 +337,7 @@ class Matrices:
         for i in range(0, self.num_states):
             row = []
             for j in range(0, self.num_observations):
-                row.append(1.0)
+                row.append(random.random())
             self.emiss_mat.append(row)
 
     def init_shift_trans_mat(self):
@@ -334,21 +365,6 @@ class Matrices:
             for j in range(0, self.num_observations):
                 row.append(0)
             self.shift_emiss_mat.append(row)
-
-    def init_normalization_factors(self):
-        '''Initialize the normalization factors that are used for the Forward
-        and Backward algorithms in CRF.
-        '''
-
-        for i in range(0, len(self.obs_seq)):
-            forward_mult = len(self.obs_seq) - 1
-            backward_mult = len(self.obs_seq) - 1
-            #backward_mult = i + 1
-            #self.forward_normalization_factors.append(.00005 * forward_mult)
-            #self.backward_normalization_factors.append(.00004 * backward_mult)
-            self.forward_normalization_factors.append(.025)
-            self.backward_normalization_factors.append(.025)
-        print('Initialized normalization factors. There are ' + str(len(self.obs_seq)) + ' of them')
 
     def get_g_score_forward(self, seq_pos, state_curr, state_prev, seq_int):
         '''Returns the G-score for the forward algorithm. This is just
@@ -484,13 +500,22 @@ class Forward:
         self.matrices = matrices
         self.num_states = num_states
         self.forward_mat = []
+        self.normalization_factors = []
 
     def run(self, sequence):
         '''Runs Foward on the passed in sequence.'''
 
+        self.normalization_factors = [40 for x in range(len(sequence))]
         self.initialize_forward_mat(sequence)
         # Traverse by column
         for seq_pos in range(1, len(sequence)):
+            # Compute dynamic multiplicative factors to prevent underflow/overflow
+            normalization_factor = 0
+            for state_curr in range(0, self.num_states):
+                for state_prev in range(0, self.num_states):
+                    normalization_factor += self.forward_mat[state_prev][seq_pos - 1] * self.matrices.get_g_score_forward(seq_pos, state_curr, state_prev, int(sequence[seq_pos]))
+            self.normalization_factors[seq_pos] = normalization_factor
+
             for state_curr in range(0, self.num_states):
                 seq_int = int(sequence[seq_pos])
                 sum_score = 0
@@ -499,8 +524,8 @@ class Forward:
                     # them up
                     forward_score = self.forward_mat[state_prev][seq_pos - 1]
                     g_score = self.matrices.get_g_score_forward(seq_pos, state_curr, state_prev, seq_int)
-                    normalization_factor = self.matrices.forward_normalization_factors[seq_pos]
-                    score = g_score * forward_score * normalization_factor
+                    normalization_factor = self.normalization_factors[seq_pos]
+                    score = float(g_score * forward_score) / normalization_factor
                     sum_score += score
                 self.forward_mat[state_curr][seq_pos] = sum_score
 
@@ -521,8 +546,8 @@ class Forward:
                     seq_int = int(sequence[j])
                     # Calculate initial probabilities.
                     emiss_val = self.matrices.emiss_mat[i][seq_int]
-                    normalization_val = self.matrices.forward_normalization_factors[j]
-                    val = math.exp((1.0 / self.num_states) + emiss_val) * normalization_val
+                    normalization_val = self.normalization_factors[j]
+                    val = float(math.exp((1.0 / self.num_states) + emiss_val)) / normalization_val
                     row.append(val)
                 else:
                     row.append(0)
@@ -553,13 +578,22 @@ class Backward:
         self.matrices = matrices
         self.num_states = num_states
         self.backward_mat = []
+        self.normalization_factors = []
 
     def run(self, sequence):
         '''Runs Backward on the passed in sequence.'''
 
+        self.normalization_factors = [40 for x in range(len(sequence))]
         self.initialize_backward_mat(sequence)
         # Traverse by column, starting from second to last column
         for seq_pos in range(len(sequence) - 2, -1, -1):
+            # Compute dynamic multiplicative factors to prevent underflow/overflow
+            normalization_factor = 0
+            for state_curr in range(0, self.num_states):
+                for state_prev in range(0, self.num_states):
+                    normalization_factor += self.backward_mat[state_curr][seq_pos + 1] * self.matrices.get_g_score_forward(seq_pos, state_curr, state_prev, int(sequence[seq_pos]))
+            self.normalization_factors[seq_pos] = normalization_factor
+
             for state_curr in range(0, self.num_states):
                 seq_int = int(sequence[seq_pos])
                 sum_score = 0
@@ -569,8 +603,8 @@ class Backward:
                     # Note that we sum the emission score, as opposed to forward.
                     g_score = self.matrices.get_g_score_backward(seq_pos, state_curr, state_next, seq_int)
                     backward_score = self.backward_mat[state_next][seq_pos + 1]
-                    normalization_factor = self.matrices.backward_normalization_factors[seq_pos]
-                    score = g_score * backward_score * normalization_factor
+                    normalization_factor = self.normalization_factors[seq_pos]
+                    score = float(g_score * backward_score) / normalization_factor
                     sum_score += score
                 self.backward_mat[state_curr][seq_pos] = sum_score
 
@@ -589,7 +623,7 @@ class Backward:
             for j in range(0, len(sequence)):
                 if j == len(sequence) - 1:
                     # For backward, initial val is 1
-                    val = 1 * self.matrices.backward_normalization_factors[j]
+                    val = float(1) / self.normalization_factors[j]
                     row.append(val)
                 else:
                     row.append(0)
