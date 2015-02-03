@@ -1,0 +1,32 @@
+VITERBI NOTES
+all states
+all tags
+the sequence of tags (that you're trying to turn into states)
+probability that first tag is a state, for each state
+
+
+score = (prob of transition to last state to current state) * (probability of tag being emitted given observation of current column)
+
+
+FORWARD NOTES
+    - every alpha means every z
+    - every z means every state
+
+initialize column 0 as before, basically
+a_z(0) = P(state1 | state 0) * P(observation 1 | state 1)
+where the first probability is uniform
+
+then, for the next columns, we will do
+a_z(i+1) = P(observation i+1 | state i+1) * SUM FROM 1 TO (num states) AS j [ a_(z-1)(i) * p(state z | state j) ]
+
+
+MTRAINING NOTES
+Turn states, observations into numbers with hashmap
+
+Transition matrix
+    - for each state B, count how many times it appears
+    - count how many times state A follows it (appears on a consecutive line)
+
+Observation matrix
+    - for each genre B, find how likely it is given state A
+        - lines with genre B, state A / total number of lines with state A

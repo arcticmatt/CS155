@@ -1,0 +1,14 @@
+Structural SVM
+    - SVM for structure prediction
+    - F(y_i,x_i) - F(y',x_i) is the BEST SCORE - score we're considering which is y'
+    - slack variable exists b/c hamming variable not continuous, so cannot directly minimize
+    - continuous surrogate of hamming loss
+
+For epsilon shit (24)
+if sequence varies wildy in length, may want to use normalized hamming length (otherwise long sequences will dominate)
+
+for every training point, we find the y' whose constraint is most violated (step 2 loops over every training example)
+
+generalization depends on number of support vectors and epsilon
+
+

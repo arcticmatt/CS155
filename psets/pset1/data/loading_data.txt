@@ -1,0 +1,10 @@
+Loading data into Matlab:
+
+- Use fopen and fscanf command:
+  For example:
+    fileID_train = fopen('wine_training1.txt', 'r');
+    formatSpec = '%f %f %f %f %f %f %f %f %f %f %f %f';
+    sizeA = [12 inf];
+    raw_train = fscanf(fileID_train, formatSpec, sizeA);
+    x_train = raw_train(1:11,:);
+    y_train = raw_train(12,:);
