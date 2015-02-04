@@ -85,7 +85,7 @@ class Viterbi(HMM):
                     viterb_score = self.viterbi_mat[k][i-1][0]
                     # Note that when using Viterbi for CRF, we want to add these
                     # scores instead of multiplying them
-                    score = np.longdouble(emiss_score * trans_score * viterb_score)
+                    score = np.longdouble(emiss_score + trans_score + viterb_score)
                     if score > max_score:
                         max_score = score
                         old_index = k

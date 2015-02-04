@@ -70,6 +70,12 @@ class MTrain:
 
         # Initialize matrix
         self.trans_mat = [[0] * (self.num_states) for i in range(self.num_states)]
+        # For every state combination i/j, see how many times state i appears
+        # in the state list (not counting the last position in the list),
+        # then see how many times state j follows state i in the state list.
+        # The latter divided by the former is the ratio of how many state transitions i to
+        # j there are to how many to how many states i there are total, which
+        # is just the transition probability.
         for i in range(0, self.num_states):
             # Don't count last element because nothing follows it
             count = (self.state_list[:len(self.state_list) - 1]).count(i)
@@ -92,6 +98,11 @@ class MTrain:
 
         # Initialize matrix
         self.emiss_mat = [[0] * (self.num_observations) for i in range(self.num_states)]
+        # For every state/observation combination i/j, see how many times state
+        # i appears in the state list, then see how many times state i and observation
+        # j appear together and the pair list. The latter divided by the former
+        # is the probability that Ron is in hidden state i given that his observation state
+        # j, which is just the emission probability.
         for i in range(0, self.num_states):
             count = self.state_list.count(i)
             for j in range(0, self.num_observations):
@@ -111,6 +122,7 @@ class MTrain:
         test_size = len(self.pair_list) / 5
         training_size = len(self.pair_list) - test_size
         for i in range (0, 5):
+            print 'Fold', i
             self.reset_data()
             size = test_size
             # For last slice, extend it to the end
@@ -138,7 +150,7 @@ class MTrain:
             if training_sequence[j] != test_sequence[j]:
                 mismatch_count += 1
         error = mismatch_count / float(len(training_sequence))
-        print error
+        print 'Fold error =', error
         self.validation_errors.append(error)
 
     def modify_data(self, start, size):
@@ -170,8 +182,10 @@ class MTrain:
 
     def print_mat(self, label, mat, newline):
         print '=====', label, '====='
+        print label
         for row in mat:
             print row
+            print '\n'
         if newline:
             print '\n'
 

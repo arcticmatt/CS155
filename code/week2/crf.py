@@ -34,9 +34,6 @@ We also altered Viterbi to sum instead of multiply in order to test our algorith
 I also added in a dynamic normalization factor to avoid underflow/overflow, and
 used uniform initial weights (for my emission and transition entries) between
 0 and 1.
-
-For cross validation, I pocket the minimum error for each slice to more accurately
-gauge performance.
 '''
 
 class CRF:
@@ -99,7 +96,7 @@ class CRF:
         self.list_dict['state_list'] = self.state_list
         self.list_dict['obs_list'] = self.obs_list
 
-    def run_gradient_descent(self):
+    def run_gradient_descent(self, is_cross_val = False):
         '''Performs gradient descent to minimize the negative log loss over the
         training set, which in our case is just one sequence.
         '''
@@ -116,7 +113,10 @@ class CRF:
         print '======================================================================================'
         print '======================================================================================'
         print '======================================================================================'
-        # Runs 1000 epochs (or less, if we start getting underflow/overflow)
+        # Runs either 500 epochs, or less if we stabilize before then (which usually
+        # happens). Or, we break if we underflow or overflow. However, underflow
+        # or overflow should not occur, as we use specifically chosen C_alpha and
+        # C_beta values to prevent this. It is more a precaution than anything else.
         for i in range(0, 500):
             print '========== Epoch', i, '=========='
             self.matrices.init_shift_trans_mat()
@@ -132,13 +132,17 @@ class CRF:
             if self.matrices.shift_has_inf() or self.matrices.shift_has_nan():
                 break
 
+            if not self.matrices.is_changing():
+                break
+
             # Applies the gradient step
             self.matrices.update_trans_mat()
             self.matrices.update_emiss_mat()
 
             # Compute and possibly add the current error
-            error = self.add_validation_error()
-            print 'Error =', error
+            if is_cross_val:
+                error = self.add_validation_error()
+                print 'Error =', error
 
         print 'Done with gradient descent'
 
@@ -231,7 +235,7 @@ class CRF:
             if i == 4:
                 size += len(self.pair_list) - (i * test_size + test_size)
             self.modify_data(i * test_size, size)
-            self.run_gradient_descent()
+            self.run_gradient_descent(True)
         self.cross_validation_error = sum(self.validation_errors) / len(self.validation_errors)
         print 'Cross validation error = ', self.cross_validation_error
         print 'The array of errors was', self.validation_errors
@@ -239,11 +243,15 @@ class CRF:
 
     def add_validation_error(self):
         '''Computes the out of sample error for the current training set,
-        test set, and the current set of transition and emission matrices. If this
-        error is less than the error we currently have for the cross_val_slice (which
+        test set, and the current set of transition and emission matrices.
+
+        Has the following pocketing functionality:
+        If this error is less than the error we currently have for the cross_val_slice (which
         runs from 0-4 since we are doing 5-fold cross validation), we will store it in
         our array of validation errors. This essentially means we are pocketing the
         minimum errors for each slice while we do cross validation.
+        But it is currently commented out to go for a more realistic cross validation
+        error as opposed to a more optimistic one.
         '''
 
         test_obs_seq = ''.join(map(str, self.test_obs_list))
@@ -256,8 +264,11 @@ class CRF:
             if prediction_seq[j] != test_state_seq[j]:
                 mismatch_count += 1
         error = mismatch_count / float(len(prediction_seq))
-        if error < self.validation_errors[self.cross_val_slice]:
-            self.validation_errors[self.cross_val_slice] = error
+        # If this if statement is not here, we will not pocket the minimum error,
+        # and will instead just use the error at the end of gradient descent (a more
+        # realistic view)
+        #if error < self.validation_errors[self.cross_val_slice]:
+        self.validation_errors[self.cross_val_slice] = error
         return error
 
     def modify_data(self, start, size):
@@ -309,8 +320,9 @@ class Matrices:
         self.init_emiss_mat()
         self.init_shift_trans_mat()
         self.init_shift_emiss_mat()
-        self.learning_rate = .001
-        self.stopping_point = .01
+        # The learning rate for gradient descent
+        self.learning_rate = .0001
+        self.stopping_point = .001
 
     def init_trans_mat(self):
         '''Makes an initial transition matrix, where the values are chosen from
@@ -412,8 +424,8 @@ class Matrices:
         #print 'Old trans_mat is:'
         #print self.trans_mat
         self.trans_mat = [map(sum, zip(*t)) for t in zip(self.trans_mat, self.shift_trans_mat)]
-        #print 'New trans_mat is:'
-        #print self.trans_mat
+        print 'New trans_mat is:'
+        print self.trans_mat
         #print '\n'
 
     def update_emiss_mat(self):
@@ -426,8 +438,8 @@ class Matrices:
         #print 'Old emiss_mat is:'
         #print self.emiss_mat
         self.emiss_mat = [map(sum, zip(*t)) for t in zip(self.emiss_mat, self.shift_emiss_mat)]
-        #print 'New emiss_mat is:'
-        #print self.emiss_mat
+        print 'New emiss_mat is:'
+        print self.emiss_mat
 
     def shift_has_nan(self):
         '''Checks to see if either of the shift matrices has a nan value.
@@ -520,7 +532,7 @@ class Forward:
                 seq_int = int(sequence[seq_pos])
                 sum_score = 0
                 for state_prev in range(0, self.num_states):
-                    # Calculate score coming from each previous state and sum
+                    # Calculate score coming from each previous state/seq_pos and sum
                     # them up
                     forward_score = self.forward_mat[state_prev][seq_pos - 1]
                     g_score = self.matrices.get_g_score_forward(seq_pos, state_curr, state_prev, seq_int)
@@ -598,7 +610,7 @@ class Backward:
                 seq_int = int(sequence[seq_pos])
                 sum_score = 0
                 for state_next in range(0, self.num_states):
-                    # Calculate score coming from each previous state and sum
+                    # Calculate score coming from each next state/seq_pos and sum
                     # them up.
                     # Note that we sum the emission score, as opposed to forward.
                     g_score = self.matrices.get_g_score_backward(seq_pos, state_curr, state_next, seq_int)
@@ -646,4 +658,5 @@ class Backward:
 
 if __name__ == '__main__':
     crf = CRF('ron.txt')
+    #crf.run_gradient_descent()
     crf.cross_validate()

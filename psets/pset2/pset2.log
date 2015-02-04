@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  27 JAN 2015 17:11
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  3 FEB 2015 13:33
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -134,21 +134,42 @@ Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
 \f@ncyO@erf=\skip56
 \f@ncyO@olf=\skip57
 \f@ncyO@orf=\skip58
+) (/usr/local/texlive/2014/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2014/04/25 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
+(/usr/local/texlive/2014/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+(/usr/local/texlive/2014/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+) (/usr/local/texlive/2014/texmf-dist/tex/latex/latexconfig/graphics.cfg
+File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
+)
+Package graphics Info: Driver file: pdftex.def on input line 91.
+(/usr/local/texlive/2014/texmf-dist/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
+(/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
+) (/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
+)
+\Gread@gobject=\count102
+))
+\Gin@req@height=\dimen120
+\Gin@req@width=\dimen121
 ) (./pset2.aux)
 \openout1 = `pset2.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
@@ -157,15 +178,15 @@ LaTeX Font Info:    ... okay on input line 18.
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
 * modes: 
-* h-part:(L,W,R)=(72.26999pt, 452.9679pt, 72.26999pt)
-* v-part:(T,H,B)=(72.26999pt, 700.50687pt, 72.26999pt)
+* h-part:(L,W,R)=(65.04256pt, 467.42276pt, 65.04256pt)
+* v-part:(T,H,B)=(65.04256pt, 714.96173pt, 65.04256pt)
 * \paperwidth=597.50787pt
 * \paperheight=845.04684pt
-* \textwidth=452.9679pt
-* \textheight=700.50687pt
-* \oddsidemargin=0.0pt
-* \evensidemargin=0.0pt
-* \topmargin=0.0pt
+* \textwidth=467.42276pt
+* \textheight=714.96173pt
+* \oddsidemargin=-7.22743pt
+* \evensidemargin=-7.22743pt
+* \topmargin=-7.22743pt
 * \headheight=12.0pt
 * \headsep=10.0pt
 * \topskip=10.0pt
@@ -183,54 +204,360 @@ LaTeX Font Info:    ... okay on input line 18.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-LaTeX Font Info:    Try loading font information for U+msa on input line 23.
+(/usr/local/texlive/2014/texmf-dist/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count103
+\scratchdimen=\dimen122
+\scratchbox=\box28
+\nofMPsegments=\count104
+\nofMParguments=\count105
+\everyMPshowfont=\toks27
+\MPscratchCnt=\count106
+\MPscratchDim=\dimen123
+\MPnumerator=\count107
+\makeMPintoPDFobject=\count108
+\everyMPtoPDFconversion=\toks28
+) (/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
+Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO)
+(/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/ifluatex.sty
+Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+) (/usr/local/texlive/2014/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
+(/usr/local/texlive/2014/texmf-dist/tex/latex/oberdiek/grfext.sty
+Package: grfext 2010/08/19 v1.1 Manage graphics extensions (HO)
+(/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
+Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
+)) (/usr/local/texlive/2014/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
+(/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
+Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
+(/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/etexcmds.sty
+Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+)))
+Package grfext Info: Graphics extension search list:
+(grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPEG,.JBIG2,.JB2,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 452.
+(/usr/local/texlive/2014/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
+))
+LaTeX Font Info:    Try loading font information for U+msa on input line 25.
 (/usr/local/texlive/2014/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 23.
+LaTeX Font Info:    Try loading font information for U+msb on input line 25.
 (/usr/local/texlive/2014/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-Underfull \hbox (badness 10000) in paragraph at lines 38--49
+Underfull \hbox (badness 10000) in paragraph at lines 43--54
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 51--62
+Underfull \hbox (badness 10000) in paragraph at lines 56--67
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 64--75
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 77--88
+Underfull \hbox (badness 10000) in paragraph at lines 69--80
 
  []
 
 [1{/usr/local/texlive/2014/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 90--101
+Underfull \hbox (badness 10000) in paragraph at lines 82--93
 
  []
 
-[2] (./pset2.aux) ) 
+
+Underfull \hbox (badness 10000) in paragraph at lines 95--106
+
+ []
+
+[2]
+Overfull \hbox (9.80074pt too wide) in paragraph at lines 119--129
+[][]
+ []
+
+
+Overfull \hbox (15.00386pt too wide) in paragraph at lines 137--147
+[][] 
+ []
+
+
+Overfull \hbox (32.91202pt too wide) in paragraph at lines 157--158
+[]\OT1/cmr/m/n/10 [0.14858490566037735, 0.22877358490566038, 0.15330188679245282, 0.1179245283018868, 0.04716981132075472,
+ []
+
+
+Overfull \hbox (30.13428pt too wide) in paragraph at lines 157--158
+\OT1/cmr/m/n/10 0.05188679245283019, 0.02830188679245283, 0.12971698113207547, 0.09198113207547169, 0.0023584905660377358] 
+ []
+
+
+Overfull \hbox (52.91208pt too wide) in paragraph at lines 159--160
+[]\OT1/cmr/m/n/10 [0.10597302504816955, 0.009633911368015413, 0.019267822736030827, 0.030828516377649325, 0.16955684007707128,
+ []
+
+
+Overfull \hbox (20.13425pt too wide) in paragraph at lines 159--160
+\OT1/cmr/m/n/10 0.046242774566473986, 0.14065510597302505, 0.23892100192678228, 0.13872832369942195, 0.1001926782273603] 
+ []
+
+
+Overfull \hbox (37.91203pt too wide) in paragraph at lines 161--162
+[]\OT1/cmr/m/n/10 [0.11942675159235669, 0.042993630573248405, 0.06528662420382166, 0.09076433121019108, 0.1767515923566879,
+ []
+
+
+Overfull \hbox (25.13426pt too wide) in paragraph at lines 161--162
+\OT1/cmr/m/n/10 0.20222929936305734, 0.04617834394904458, 0.050955414012738856, 0.07802547770700637, 0.12738853503184713] 
+ []
+
+
+Overfull \hbox (32.91202pt too wide) in paragraph at lines 163--164
+[]\OT1/cmr/m/n/10 [0.1693548387096774, 0.03870967741935484, 0.14677419354838708, 0.18225806451612903, 0.04838709677419355,
+ []
+
+
+Overfull \hbox (20.13425pt too wide) in paragraph at lines 163--164
+\OT1/cmr/m/n/10 0.06290322580645161, 0.09032258064516129, 0.025806451612903226, 0.2161290322580645, 0.01935483870967742] 
+ []
+
+
+Overfull \hbox (37.91203pt too wide) in paragraph at lines 182--183
+[]\OT1/cmr/m/n/10 [0.13392857142857142, 0.2261904761904762, 0.15476190476190477, 0.12797619047619047, 0.041666666666666664,
+ []
+
+
+Overfull \hbox (47.91206pt too wide) in paragraph at lines 184--185
+[]\OT1/cmr/m/n/10 [0.10096153846153846, 0.01201923076923077, 0.014423076923076924, 0.036057692307692304, 0.17067307692307693,
+ []
+
+
+Overfull \hbox (37.91203pt too wide) in paragraph at lines 188--189
+[]\OT1/cmr/m/n/10 [0.1656686626746507, 0.041916167664670656, 0.15169660678642716, 0.16766467065868262, 0.04790419161676647,
+ []
+
+
+Overfull \hbox (25.13426pt too wide) in paragraph at lines 188--189
+\OT1/cmr/m/n/10 0.0658682634730539, 0.09181636726546906, 0.029940119760479042, 0.21956087824351297, 0.017964071856287425] 
+ []
+
+
+Overfull \hbox (37.91203pt too wide) in paragraph at lines 206--207
+[]\OT1/cmr/m/n/10 [0.14328358208955225, 0.2298507462686567, 0.14925373134328357, 0.11343283582089553, 0.050746268656716415,
+ []
+
+[3]
+Overfull \hbox (47.91206pt too wide) in paragraph at lines 208--209
+[]\OT1/cmr/m/n/10 [0.1100244498777506, 0.007334963325183374, 0.019559902200488997, 0.029339853300733496, 0.17359413202933985,
+ []
+
+
+Overfull \hbox (15.13423pt too wide) in paragraph at lines 208--209
+\OT1/cmr/m/n/10 0.05134474327628362, 0.14425427872860636, 0.22493887530562348, 0.1393643031784841, 0.10024449877750612] 
+ []
+
+
+Overfull \hbox (32.91202pt too wide) in paragraph at lines 210--211
+[]\OT1/cmr/m/n/10 [0.1182170542635659, 0.040697674418604654, 0.06976744186046512, 0.09108527131782945, 0.1744186046511628,
+ []
+
+
+Overfull \hbox (25.13426pt too wide) in paragraph at lines 210--211
+\OT1/cmr/m/n/10 0.20736434108527133, 0.046511627906976744, 0.05232558139534884, 0.07945736434108527, 0.12015503875968993] 
+ []
+
+
+Overfull \hbox (32.91202pt too wide) in paragraph at lines 212--213
+[]\OT1/cmr/m/n/10 [0.1643002028397566, 0.036511156186612576, 0.15212981744421908, 0.19066937119675456, 0.0486815415821501,
+ []
+
+
+Overfull \hbox (20.13425pt too wide) in paragraph at lines 212--213
+\OT1/cmr/m/n/10 0.06288032454361055, 0.09127789046653144, 0.02231237322515213, 0.21095334685598377, 0.02028397565922921] 
+ []
+
+
+Overfull \hbox (42.91205pt too wide) in paragraph at lines 230--231
+[]\OT1/cmr/m/n/10 [0.15072463768115943, 0.22318840579710145, 0.15942028985507245, 0.11014492753623188, 0.057971014492753624,
+ []
+
+
+Overfull \hbox (25.13426pt too wide) in paragraph at lines 230--231
+\OT1/cmr/m/n/10 0.04927536231884058, 0.02318840579710145, 0.14202898550724638, 0.08115942028985507, 0.002898550724637681] 
+ []
+
+
+Overfull \hbox (47.91206pt too wide) in paragraph at lines 232--233
+[]\OT1/cmr/m/n/10 [0.11058823529411765, 0.011764705882352941, 0.021176470588235293, 0.03058823529411765, 0.17411764705882352,
+ []
+
+
+Overfull \hbox (10.13422pt too wide) in paragraph at lines 232--233
+\OT1/cmr/m/n/10 0.047058823529411764, 0.1388235294117647, 0.2376470588235294, 0.12941176470588237, 0.0988235294117647] 
+ []
+
+
+Overfull \hbox (32.91202pt too wide) in paragraph at lines 234--235
+[]\OT1/cmr/m/n/10 [0.1134020618556701, 0.04742268041237113, 0.06597938144329897, 0.09484536082474226, 0.17525773195876287,
+ []
+
+
+Overfull \hbox (15.13423pt too wide) in paragraph at lines 234--235
+\OT1/cmr/m/n/10 0.18969072164948453, 0.04329896907216495, 0.0577319587628866, 0.08041237113402062, 0.13195876288659794] 
+ []
+
+
+Overfull \hbox (27.912pt too wide) in paragraph at lines 236--237
+[]\OT1/cmr/m/n/10 [0.1606425702811245, 0.04216867469879518, 0.13855421686746988, 0.178714859437751, 0.050200803212851405,
+ []
+
+
+Overfull \hbox (20.13425pt too wide) in paragraph at lines 236--237
+\OT1/cmr/m/n/10 0.0642570281124498, 0.09236947791164658, 0.02208835341365462, 0.22690763052208834, 0.024096385542168676] 
+ []
+
+
+Overfull \hbox (65.91211pt too wide) in paragraph at lines 254--255
+[]\OT1/cmr/m/n/10 [0.1636904761904762, 0.23809523809523808, 0.14583333333333334, 0.125, 0.03571428571428571, 0.050595238095238096,
+ []
+
+
+Overfull \hbox (42.91205pt too wide) in paragraph at lines 256--257
+[]\OT1/cmr/m/n/10 [0.1044776119402985, 0.007462686567164179, 0.01990049751243781, 0.029850746268656716, 0.15422885572139303,
+ []
+
+
+Overfull \hbox (5.1342pt too wide) in paragraph at lines 256--257
+\OT1/cmr/m/n/10 0.03980099502487562, 0.15920398009950248, 0.236318407960199, 0.14427860696517414, 0.1044776119402985] 
+ []
+
+
+Overfull \hbox (37.91203pt too wide) in paragraph at lines 258--259
+[]\OT1/cmr/m/n/10 [0.11984282907662082, 0.03929273084479371, 0.05697445972495088, 0.09430255402750491, 0.18664047151277013,
+ []
+
+
+Overfull \hbox (25.13426pt too wide) in paragraph at lines 258--259
+\OT1/cmr/m/n/10 0.20235756385068762, 0.043222003929273084, 0.05108055009823183, 0.08055009823182711, 0.12573673870333987] 
+ []
+
+
+Overfull \hbox (37.91203pt too wide) in paragraph at lines 260--261
+[]\OT1/cmr/m/n/10 [0.17588932806324112, 0.041501976284584984, 0.1442687747035573, 0.18379446640316205, 0.05138339920948617,
+ []
+
+
+Overfull \hbox (25.13426pt too wide) in paragraph at lines 260--261
+\OT1/cmr/m/n/10 0.05928853754940711, 0.09090909090909091, 0.02766798418972332, 0.20948616600790515, 0.015810276679841896] 
+ []
+
+
+Overfull \hbox (27.912pt too wide) in paragraph at lines 278--279
+[]\OT1/cmr/m/n/10 [0.1511627906976744, 0.22674418604651161, 0.1569767441860465, 0.11337209302325581, 0.04941860465116279,
+ []
+
+
+Overfull \hbox (35.1343pt too wide) in paragraph at lines 278--279
+\OT1/cmr/m/n/10 0.046511627906976744, 0.03488372093023256, 0.12790697674418605, 0.09011627906976744, 0.0029069767441860465] 
+ []
+
+
+Overfull \hbox (42.91205pt too wide) in paragraph at lines 280--281
+[]\OT1/cmr/m/n/10 [0.10377358490566038, 0.009433962264150943, 0.02122641509433962, 0.02830188679245283, 0.17452830188679244,
+ []
+
+
+Overfull \hbox (5.1342pt too wide) in paragraph at lines 280--281
+\OT1/cmr/m/n/10 0.04481132075471698, 0.1320754716981132, 0.2429245283018868, 0.1391509433962264, 0.10377358490566038] 
+ []
+
+
+Overfull \hbox (42.91205pt too wide) in paragraph at lines 282--283
+[]\OT1/cmr/m/n/10 [0.12151394422310757, 0.045816733067729085, 0.06772908366533864, 0.08565737051792828, 0.17729083665338646,
+ []
+
+
+Overfull \hbox (25.13426pt too wide) in paragraph at lines 282--283
+\OT1/cmr/m/n/10 0.20717131474103587, 0.053784860557768925, 0.043824701195219126, 0.0697211155378486, 0.12749003984063745] 
+ []
+
+
+Overfull \hbox (37.91203pt too wide) in paragraph at lines 284--285
+[]\OT1/cmr/m/n/10 [0.18049792531120332, 0.03112033195020747, 0.14730290456431536, 0.1908713692946058, 0.043568464730290454,
+ []
+
+
+Overfull \hbox (25.13426pt too wide) in paragraph at lines 284--285
+\OT1/cmr/m/n/10 0.06224066390041494, 0.08506224066390042, 0.026970954356846474, 0.21369294605809128, 0.01867219917012448] 
+ []
+
+[4]
+Overfull \hbox (16.46739pt too wide) in paragraph at lines 310--320
+[][]
+ []
+
+
+Overfull \hbox (14.99734pt too wide) in paragraph at lines 328--338
+[][] 
+ []
+
+
+Overfull \hbox (21.2453pt too wide) in paragraph at lines 346--347
+[]\OT1/cmr/m/n/10 [0.678576129709364, 1.5660195491974152, 1.0866066699254782, 0.4891073909266601, -0.026627156928609834,
+ []
+
+
+Overfull \hbox (18.46756pt too wide) in paragraph at lines 346--347
+\OT1/cmr/m/n/10 0.22001582041876286, -0.31228565923031115, 0.7207442556082864, 0.22039626545581772, 0.09824653352323524] 
+ []
+
+
+Overfull \hbox (42.912pt too wide) in paragraph at lines 348--350
+[]\OT1/cmr/m/n/10 [0.47157349092503487, -0.32043398464972866, -0.10183429520303876, -0.12782008160023584, 1.0987071547053429,
+ []
+
+
+Overfull \hbox (12.91196pt too wide) in paragraph at lines 351--353
+[]\OT1/cmr/m/n/10 [0.4300309427002712, 0.15451513204335834, 0.15109866059897975, 0.210943678471252, 1.170838309186604,
+ []
+
+
+Overfull \hbox (17.91197pt too wide) in paragraph at lines 354--356
+[]\OT1/cmr/m/n/10 [0.9813684811872891, 0.3243694857402104, 1.1555949685549278, 1.0550964808181433, 0.36214883345390125,
+ []
+
+
+Overfull \hbox (5.1342pt too wide) in paragraph at lines 354--356
+\OT1/cmr/m/n/10 0.48985328428945285, 0.49748203454144985, 0.1448778347519093, 1.1300812245578384, 0.3211769587341272]
+ []
+
+[5] [6] (./pset2.aux) ) 
 Here is how much of TeX's memory you used:
- 1841 strings out of 493117
- 22724 string characters out of 6135433
- 85355 words of memory out of 5000000
- 5320 multiletter control sequences out of 15000+600000
- 6549 words of font info for 26 fonts, out of 8000000 for 9000
+ 3050 strings out of 493117
+ 40877 string characters out of 6135433
+ 117103 words of memory out of 5000000
+ 6474 multiletter control sequences out of 15000+600000
+ 6857 words of font info for 27 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 27i,10n,43p,266b,192s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb>
-Output written on pset2.pdf (2 pages, 55155 bytes).
+ 37i,11n,43p,269b,196s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
+Output written on pset2.pdf (6 pages, 98364 bytes).
 PDF statistics:
- 31 PDF objects out of 1000 (max. 8388607)
- 21 compressed objects within 1 object stream
+ 51 PDF objects out of 1000 (max. 8388607)
+ 35 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
