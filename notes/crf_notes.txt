@@ -1,7 +1,0 @@
-Compute gradient
-    - For log(Z)
-        - sum over all states a, b
-            - compute alphas (forward)
-            - compute betas (backward)
-            - compute Z (with G matrices)
-            - compute G matrices (done already for Z)
